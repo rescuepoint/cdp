@@ -1,0 +1,377 @@
+################################################################
+#                                                              #
+#         Playbook Ansible - Configuração CLuster CDP          #
+#         Criado por: Anselmo Borges                           #
+#         Data de criação: 31.10.2020                          #
+#         Ultima atualização: 31.10.2020                       #
+#                                                              #
+################################################################                                    
+
+- name: "Playbook de instalação cluster CDP"
+  hosts: elliots
+  vars:
+    senha: password
+
+  tasks:
+    - name: "Parar o Firewalld"
+      service: 
+        name: firewalld
+        state: stopped
+      become: yes
+      become_method: sudo
+      become_user: root
+
+    - name: "Desabilitar o start do Firewalld pós reboot"
+      service: 
+        name: firewalld
+        enabled: no
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Desativa o SELINUX no servidor"
+      lineinfile:
+        path: /etc/sysconfig/selinux
+        regexp: '^SELINUX=enforcing'
+        line: 'SELINUX=disabled'
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos  
+
+    - name: "Movimentando arquivo do limits.conf"
+      copy:
+        src: arquivos/limits.conf
+        dest: /etc/security/limits.conf
+        owner: root
+        group: root
+        mode: 0644
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Arrumando o Timezone pra Brasil"
+      shell: rm -rf /etc/localtime;ln -s /usr/share/zoneinfo/Brazil/East /etc/localtime
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Ativar o Swappiness"
+      shell: echo '1' > /proc/sys/vm/swappiness
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Desativar o transparent HugePages pontualmente"
+      shell: echo 'never' > /sys/kernel/mm/transparent_hugepage/defrag;echo 'never' > /sys/kernel/mm/transparent_hugepage/enabled
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Atualizar o rc.local para que ele desative o transparent HugePages todo reboot"
+      copy:
+        src: arquivos/rc.local
+        dest: /etc/rc.d/rc.local
+        owner: root
+        group: root
+        mode: 0644
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Colocando o arquivo /etc/hosts atualizado no servidor"
+      copy:
+        src: arquivos/hosts
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: 0644
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Criando o diretorio /usr/share/java"
+      file: 
+        path: /usr/share/java
+        state: directory
+        mode: 0644   
+        owner: root
+        group: root
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar o JDBC fo MySQL"
+      get_url:
+        url: https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.22.tar.gz
+        dest: /home/opc/
+        mode: '0440'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixando e configurando o JDBC do MySQL"
+      shell: tar zfxv mysql-connector-java-8.0.22.tar.gz;mv mysql-connector-java-8.0.22/mysql-connector-java-8.0.22.jar /usr/share/java/mysql-connector.jar
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Mudando o privilégio do JDBC do MySQL"
+      file: 
+        path: /usr/share/java/mysql-connector.jar
+        mode: 0777   
+        owner: root
+        group: root
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: Instala pre-reqs via YUM (apache, kerberos client, createrepo e outros)
+      yum: 
+        name: ['telnet','httpd','krb5-workstation','krb5-libs','createrepo']
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Habilitar o start do Apache pós reboot"
+      service: 
+        name: httpd
+        enabled: yes
+      become: yes
+      become_method: sudo
+      become_user: root   
+
+    - name: "Adicionando a opção de parcel no httpd.conf"
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: 'AddType application/x-gzip .gz .tgz'
+        line: 'AddType application/x-gzip .gz .tgz .parcel'
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos 
+
+    - name: "Reiniciar o Apache"
+      service: 
+        name: httpd
+        state: restarted
+      become: yes
+      become_method: sudo
+      become_user: root
+
+    - name: "Criando o diretorio do repositorio /var/www/html/cdp7"
+      file: 
+        path: /var/www/html/cdp7
+        state: directory
+        mode: 0755   
+        owner: root
+        group: root
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar o rpm do cloudera agent"
+      get_url:
+        url: 'http://archive.cloudera.com/cm7/7.1.4/redhat7/yum/RPMS/x86_64/cloudera-manager-agent-7.1.4-6363010.el7.x86_64.rpm'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar o rpm do cloudera deamons"
+      get_url:
+        url: 'http://archive.cloudera.com/cm7/7.1.4/redhat7/yum/RPMS/x86_64/cloudera-manager-daemons-7.1.4-6363010.el7.x86_64.rpm'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar o rpm do cloudera server"
+      get_url:
+        url: 'http://archive.cloudera.com/cm7/7.1.4/redhat7/yum/RPMS/x86_64/cloudera-manager-server-7.1.4-6363010.el7.x86_64.rpm'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar o rpm do cloudera server db"
+      get_url:
+        url: 'http://archive.cloudera.com/cm7/7.1.4/redhat7/yum/RPMS/x86_64/cloudera-manager-server-db-2-7.1.4-6363010.el7.x86_64.rpm'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar o rpm do enterprise debug"
+      get_url:
+        url: 'http://archive.cloudera.com/cm7/7.1.4/redhat7/yum/RPMS/x86_64/enterprise-debuginfo-7.1.4-6363010.el7.x86_64.rpm'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar o rpm do OPENJDK da Cloudera"
+      get_url:
+        url: 'http://archive.cloudera.com/cm7/7.1.4/redhat7/yum/RPMS/x86_64/openjdk8-8.0+232_9-cloudera.x86_64.rpm'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar o allkeys"
+      get_url:
+        url: 'http://archive.cloudera.com/cm7/7.1.4/allkeys.asc'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar o parcel do CDP 7.1.4"
+      get_url:
+        url: 'http://archive.cloudera.com/cdh7/7.1.4.0/parcels/CDH-7.1.4-1.cdh7.1.4.p0.6300266-el7.parcel'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Baixar a chave do parcel do CDP 7.1.4"
+      get_url:
+        url: 'http://archive.cloudera.com/cdh7/7.1.4.0/parcels/CDH-7.1.4-1.cdh7.1.4.p0.6300266-el7.parcel.sha256'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Usando o createrepo no diretorio com os arquivos baixados"
+      shell: cd /var/www/html/cdp7;createrepo .
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Atualizando todos os repositórios do YUM"
+      yum: 
+        name: "*"
+        state: latest
+      become: true
+      become_method: sudo
+      become_user: root
+
+    - name: "Colocando o repositorio que aponta para o elliot01 no servidor"
+      copy:
+        src: arquivos/cdh.repo
+        dest: /etc/yum.repos.d/
+        owner: root
+        group: root
+        mode: 0644
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: Instala pre-reqs via YUM (apache, kerberos client, createrepo e outros)
+      yum: 
+        name: ['openjdk8.x86_64']
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Adicionando variaveis do Java no /etc/profile"
+      shell: echo "export JAVA_HOME=/usr/java/jdk1.8.0_232-cloudera/" >> /etc/profile;echo "export CLASSPATH=.:$JAVA_HOME/jre/lib:$JAVA_HOME/lib:$JAVA_HOME/lib/tools.jar" >> /etc/profile;echo "PATH=$PATH:$HOME/bin:$JAVA_HOME/bin" >> /etc/profile
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Alterando a senha do user root para password"
+      shell: echo root:{{ senha }} | chpasswd
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: Adicionando o usuário cdp
+      user:
+        name: cdp
+        shell: /bin/bash
+        append: yes
+      become: yes      
+      become_method: sudo
+      become_user: root
+
+    - name: "Alterando a senha do user cdp para password"
+      shell: echo cdp:{{ senha }} | chpasswd
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Coloca o CDP no sudoers"
+      lineinfile:
+        path: /etc/sudoers
+        regexp: '^# %wheel        ALL=(ALL)       NOPASSWD: ALL'
+        line: 'cdp        ALL=(ALL)       NOPASSWD: ALL'
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos 
+
+    - name: "Alterando o login via SSH para permitir login com root"
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#PermitRootLogin yes'
+        line: 'PermitRootLogin yes'
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Alterando o login via SSH para permitir login com senha"
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication no'
+        line: 'PasswordAuthentication yes'
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Reiniciar o SSHD"
+      service: 
+        name: sshd
+        state: restarted
+      become: yes
+      become_method: sudo
+      become_user: root

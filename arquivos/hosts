@@ -1,0 +1,11 @@
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+10.0.1.31 	elliot01	elliot01.datasecops.pro
+10.0.1.32 	elliot02	elliot02.datasecops.pro
+10.0.1.33 	elliot03	elliot03.datasecops.pro
+10.0.1.34 	elliot04	elliot04.datasecops.pro
+10.0.1.35 	elliot05	elliot05.datasecops.pro
+10.0.1.36 	elliot06	elliot06.datasecops.pro
+10.0.1.37 	elliot07	elliot07.datasecops.pro
+10.0.1.38 	elliot08	elliot08.datasecops.pro

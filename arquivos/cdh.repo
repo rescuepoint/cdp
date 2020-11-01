@@ -1,0 +1,5 @@
+[cmrepo]
+name = cm_repo
+baseurl = http://elliot01/cdp7/
+enable = true
+gpgcheck = false
