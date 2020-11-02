@@ -6,7 +6,7 @@ Segue abaixo um desenho de arquitetura que mostra básicamente como está config
 
 ![Desenho Arquitetura Cloud CDP](https://github.com/rescuepoint/cdp/blob/main/fotos/Sem%20Ti%CC%81tulo.PNG)
 
-Toda essa arquitetura foi explicada em video de youtube abaixo:<br>
+### Toda essa arquitetura foi explicada em video de youtube abaixo:
 [![Instalando Cloudera CDP - Arquitetura](https://img.youtube.com/vi/XoVSxKtdbmo/0.jpg)](https://www.youtube.com/watch?v=XoVSxKtdbmo)
 
 ### Esse desenho cotempla em termos de redes:
@@ -48,4 +48,5 @@ Vamos realizar a criação da primeira maquina como base para imagem, com a conf
 Usaremos um playbook Ansible para realizar todos esses passos, o playbook se encontra nesse repositório com o nome de cdp.yml. Após a execução do playbook iremos criar uma imagem do servidor após boot e assim criar nossas instancias definitivas.
 
 ## Procedimento de criação da Imagem.
-O procedimento de criação da imágem e da criação dos servidores no Oracle OCI encontram-se no vídeo do Youtube do link abaixo:
+O procedimento de criação da imágem e da criação dos servidores no Oracle OCI encontram-se no vídeo do Youtube do link abaixo:<br>
+[![Instalando Cloudera CDP - Criando imagem com pre-requisitos e infra](https://img.youtube.com/vi/VTz6vAbRe1w/0.jpg)](https://www.youtube.com/watch?v=VTz6vAbRe1w)
