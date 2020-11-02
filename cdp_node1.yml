@@ -1,0 +1,92 @@
+################################################################
+#                                                              #
+#         Playbook Ansible - Configuração CLuster CDP          #
+#         Criado por: Anselmo Borges                           #
+#         Data de criação: 31.10.2020                          #
+#         Ultima atualização: 31.10.2020                       #
+#                                                              #
+################################################################                                    
+
+- name: "Playbook de instalação cluster CDP - Node 1"
+  hosts: elliot01
+  vars:
+    senha: password
+
+  tasks:
+    - name: "Instala MariaDB"
+      yum: 
+        name: ['mariadb-bench','mariadb-devel','mariadb-embedded','mariadb-embedded-devel','mariadb-server','mariadb-test']
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: node1          
+
+    - name: "Habilita o MariaDB no boot"
+      service: 
+        name: mariadb
+        enabled: yes
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: node1
+
+    - name: "Inicia o MariaDB"
+      service: 
+        name: mariadb
+        state: started
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: node1
+
+    - name: "Copia script cdp.sql"
+      copy:
+        src: arquivos/cdp.sql
+        dest: /tmp/cdp.sql
+        owner: root
+        group: root
+        mode: 0644
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: node1
+
+    - name: "Executa script cdp.sql"
+      shell: mysql -uroot < /tmp/cdp.sql
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: node1
+
+    - name: "Instala cloudera manager server"
+      yum: 
+        name: ['cloudera-manager-server']
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: node1
+
+    - name: "Ajusta o db.properties com a senha definida"
+      shell: /opt/cloudera/cm/schema/scm_prepare_database.sh mysql cmf cmf password
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: node1
+
+    - name: "Inicia o Cloudera Manager Server"
+      service: 
+        name: cloudera-scm-server
+        state: started
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: node1
+
+    - name: "Habilita o Cloudera Manager Server no boot"
+      service: 
+        name: cloudera-scm-server
+        enabled: yes
+      become: yes
+      become_method: sudo
+      become_user: root
+      tags: node1
