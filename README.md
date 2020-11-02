@@ -6,7 +6,8 @@ Segue abaixo um desenho de arquitetura que mostra básicamente como está config
 
 ![Desenho Arquitetura Cloud CDP](https://github.com/rescuepoint/cdp/blob/main/fotos/Sem%20Ti%CC%81tulo.PNG)
 
-Toda essa arquitetura foi explicada em video de youtube abaixo: Link
+Toda essa arquitetura foi explicada em video de youtube abaixo:<br>
+[![Instalando Cloudera CDP - Arquitetura](https://img.youtube.com/vi/XoVSxKtdbmo/0.jpg)](https://www.youtube.com/watch?v=XoVSxKtdbmo)
 
 ### Esse desenho cotempla em termos de redes:
 * Uma VPC - 10.0.0.0/16
