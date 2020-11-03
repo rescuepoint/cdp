@@ -62,16 +62,13 @@ Agora que já instalamos o básico para todos os nodes, vamos fazer as seguintes
 
 Todo esse procedimento vai ser realizado por um segundo playbook chamado cdp_node1.yml e vai ser executado somente no primeiro node, observe o script.
 
-Segue o link com o vpideo dessa parte do material: LInk
+Segue o link com o vpideo dessa parte do material:<br>
+[![Instalando Cloudera CDP - Arquitetura](https://img.youtube.com/vi/i6Tc9zf-mL0/0.jpg)](https://www.youtube.com/watch?v=i6Tc9zf-mL0)
 
 ## Criando o Loadbalance no Oracle OCI para o Cloudera Manager Server.
 Vamos usar um recurso de Load Balance do OCI para apontarmos as requisições externas da porta 7180 para o Cloudera Manager Server que está na rede privada. Esse tipo de configuração dá uma confiança absurda no acesso, escalabilidade, facilidade em possivei modificações. 
 
-O desenho do acesso vai ser o seguinte:
-
+O desenho do acesso vai ser o seguinte:<br>
 ![Funcionamento Load Balance](https://github.com/rescuepoint/cdp/blob/main/fotos/Whiteboard_2020_11_2.svg)
 
 O procedimento é bem simples e explicado no vídeo anterior.
-
-
-
