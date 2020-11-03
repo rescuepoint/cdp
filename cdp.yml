@@ -143,7 +143,7 @@
       become: yes
       become_method: sudo
       become_user: root
-      tags: todos      
+      tags: rpm      
 
     - name: Instala pre-reqs via YUM (apache, kerberos client, createrepo e outros)
       yum: 
