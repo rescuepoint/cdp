@@ -69,7 +69,7 @@ Vamos usar um recurso de Load Balance do OCI para apontarmos as requisições ex
 
 O desenho do acesso vai ser o seguinte:
 
-![Funcionamento Load Balance](https://img.youtube.com/vi/XoVSxKtdbmo/0.jpg)
+![Funcionamento Load Balance](https://github.com/rescuepoint/cdp/blob/main/fotos/Whiteboard_2020_11_2.svg)
 
 O procedimento é bem simples e explicado no vídeo anterior.
 
