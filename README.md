@@ -68,7 +68,8 @@ Segue o link com o vpideo dessa parte do material: LInk
 Vamos usar um recurso de Load Balance do OCI para apontarmos as requisições externas da porta 7180 para o Cloudera Manager Server que está na rede privada. Esse tipo de configuração dá uma confiança absurda no acesso, escalabilidade, facilidade em possivei modificações. 
 
 O desenho do acesso vai ser o seguinte:
-[![Funcionamento Load Balance](https://img.youtube.com/vi/XoVSxKtdbmo/0.jpg)
+
+[![Funcionamento Load Balance](https://img.youtube.com/vi/XoVSxKtdbmo/0.jpg)]
 
 O procedimento é bem simples e explicado no vídeo anterior.
 
