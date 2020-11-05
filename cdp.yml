@@ -96,6 +96,13 @@
       become_method: sudo
       become_user: root
       tags: todos
+      
+    - name: "Deixar o /etc/hosts imutavel"
+      shell: chattr +i /etc/hosts
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos 
 
     - name: "Criando o diretorio /usr/share/java"
       file: 
