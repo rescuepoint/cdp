@@ -281,6 +281,16 @@
       become_user: root
       tags: todos
 
+    - name: "Baixar o manifest.json"
+      get_url:
+        url: 'http://archive.cloudera.com/cdh7/7.1.4.0/parcels/manifest.json'
+        dest: /var/www/html/cdp7/
+        mode: '0755'    
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
     - name: "Usando o createrepo no diretorio com os arquivos baixados"
       shell: cd /var/www/html/cdp7;createrepo .
       become: yes      
