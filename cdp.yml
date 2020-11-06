@@ -59,8 +59,15 @@
       become_user: root
       tags: todos
 
-    - name: "Ativar o Swappiness"
+    - name: "Ativar o Swappiness pontualmente"
       shell: echo '1' > /proc/sys/vm/swappiness
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
+
+    - name: "Ativar o Swappiness definitivamente"
+      shell: echo "vm.swappiness = 1" > /etc/sysctl.conf
       become: yes      
       become_method: sudo
       become_user: root
