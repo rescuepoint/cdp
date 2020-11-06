@@ -391,7 +391,7 @@
       become: yes
       become_method: sudo
       become_user: root
-      tags: todos
+      tags: ssh
 
     - name: "Reiniciar o SSHD"
       service: 
@@ -400,3 +400,4 @@
       become: yes
       become_method: sudo
       become_user: root
+      tags: ssh
