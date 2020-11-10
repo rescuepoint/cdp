@@ -60,7 +60,7 @@
 
     - name: "Instala cloudera manager server"
       yum: 
-        name: ['cloudera-manager-server']
+        name: ['openjdk8.x86_64','cloudera-manager-server']
       become: yes
       become_method: sudo
       become_user: root
@@ -69,6 +69,13 @@
     - name: "Ajusta o db.properties com a senha definida"
       shell: /opt/cloudera/cm/schema/scm_prepare_database.sh mysql cmf cmf password
       become: yes      
+      become_method: sudo
+      become_user: root
+      tags: node1
+
+    - name: "Copia o jar do mysql para o diretorio lib do cloudera manager"
+      shell: cp /usr/share/java/my* /opt/cloudera/cm/lib/
+      become: yes
       become_method: sudo
       become_user: root
       tags: node1
