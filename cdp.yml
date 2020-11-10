@@ -60,12 +60,24 @@
       become_user: root
       tags: simples
 
+<<<<<<< HEAD
     - name: "Ativar o Swappiness"
       shell: echo '1' > /proc/sys/vm/swappiness;echo "vm.swappiness = 1" >> /etc/sysctl.conf
+=======
+    - name: "Ativar o Swappiness pontualmente"
+      shell: echo '1' > /proc/sys/vm/swappiness
+>>>>>>> d5fa10a22ad79a1741863451f5f77d6b372674d3
       become: yes      
       become_method: sudo
       become_user: root
       tags: simples
+
+    - name: "Ativar o Swappiness definitivamente"
+      shell: echo "vm.swappiness = 1" > /etc/sysctl.conf
+      become: yes      
+      become_method: sudo
+      become_user: root
+      tags: todos
 
     - name: "Desativar o transparent HugePages pontualmente"
       shell: echo 'never' > /sys/kernel/mm/transparent_hugepage/defrag;echo 'never' > /sys/kernel/mm/transparent_hugepage/enabled
